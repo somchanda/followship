@@ -77,7 +77,9 @@
                processError(msg, obj, 'password', '#password-input','#password-field');
             }
         }
-
+        function test() {
+            //some code here
+        }
         function processError(msg, obj, name, input, validation_field) {
             if(jQuery.inArray(name, obj) == '-1'){
                 $(input).removeClass('has-error');

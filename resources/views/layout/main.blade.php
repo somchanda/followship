@@ -11,6 +11,7 @@
     <link href="{{asset('assets/font/css/all.css')}}" rel="stylesheet">
     <link href="{{asset('assets/css/jquery.scrollbar.css')}}" rel="stylesheet">
     <link href="{{asset('assets/css/axios-loader.css')}}" rel="stylesheet">
+    <link href="{{asset('assets/css/notiflix-2.1.3.min.css')}}" rel="stylesheet">
     @yield('style')
 </head>
 <body>
@@ -26,6 +27,7 @@
     });
     loadProgressBar();
 </script>
+<script src="{{asset('assets/js/notiflix-2.1.3.min.js')}}"></script>
 @yield('script')
 </body>
 

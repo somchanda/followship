@@ -6,7 +6,7 @@
                 <div class="itemise_inner">
                     <div class="profile_section_inner login_section">
                         <h2>Create an Account</h2>
-                        <form id="reqForm">
+                        <form id="reqForm" autocomplete="off">
                             <div class="form-row">
                                 <label>Full Name</label>
                                 <input type="text" id="name-input" name="name" class="form-control">
@@ -43,12 +43,19 @@
 @stop
 @section('script')
     <script>
+
+        //to register for new user in register form
         $(document).on('submit',"#reqForm",function (event) {
            event.preventDefault();
            loadSpinner('.form_login_action');
            let data = $(this).serialize();
            axios.post("{{route('registerPost')}}", data).then(data =>{
-               console.log(data);
+               Notiflix.Report.Success( 'Success', data.data.success, 'Ok' );
+               setTimeout(function () {
+                    window.location = data.data.redirect_link;
+               },
+                 3000
+               );
                removeLoader('.form_login_action', 'Continue');
            }).catch(error =>{
                 printErrorMsg(error.response.data.error);
@@ -68,6 +75,7 @@
             $(item).attr('disabled',false);
         }
 
+        //to print error to specific control
         function printErrorMsg(msg) {
             if(msg != undefined){
                 var obj = Object.keys(msg);
@@ -77,10 +85,10 @@
                processError(msg, obj, 'password', '#password-input','#password-field');
             }
         }
-        function test() {
-            //some code here
-        }
+
+        //process error that was call in printErrorMsg function
         function processError(msg, obj, name, input, validation_field) {
+            //to check whether key of array is existed or not
             if(jQuery.inArray(name, obj) == '-1'){
                 $(input).removeClass('has-error');
                 $(validation_field).html('');

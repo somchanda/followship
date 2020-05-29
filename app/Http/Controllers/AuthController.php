@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
@@ -40,7 +42,13 @@ class AuthController extends Controller
         if($validator->fails()){
             return response()->json(['error' => $validator->errors()],422);
         }else{
-            return 'all good';
+            $data = new User();
+            $data->name = $request->name;
+            $data->username = $request->username;
+            $data->email = $request->email;
+            $data->password = Hash::make($request->password);
+            $data->save();
+            return response()->json(['success'=>'Account created successfully', 'redirect_link' => route('home')]);
         }
     }
 }

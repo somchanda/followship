@@ -260,3 +260,11 @@ body {
     }
 }
 /*end spinner*/
+.info_alert {
+    color: red;
+    font-size: 15px;
+    background-color: lightgoldenrodyellow;
+    padding: 5px;
+    border-radius: 5px;
+    margin: 5px;
+}

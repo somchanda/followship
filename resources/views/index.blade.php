@@ -42,14 +42,17 @@
         //to register for new user in register form
         $(document).on('submit',"#loginForm",function (event) {
             event.preventDefault();
+            Notiflix.Loading.Standard();
             let data = $(this).serialize();
             axios.post("{{route('loginPost')}}", data).then(data =>{
                 if(data.data.redirect_link != undefined){
                     window.location = data.data.redirect_link;
                 }else{
+                    Notiflix.Loading.Remove();
                     Notiflix.Report.Failure( 'Login fail',data.data.fail , 'Ok' );
                 }
             }).catch(error =>{
+                Notiflix.Loading.Remove();
                 printErrorMsg(error.response.data.error);
             });
         });

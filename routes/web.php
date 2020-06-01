@@ -21,11 +21,8 @@ Route::middleware('guest')->group(function (){
     Route::post('/login','AuthController@loginPost')->name('loginPost');
 });
 Route::middleware('auth')->group(function (){
-    Route::get('/test',function (){
-        return view('test');
-    })->name('test');
-    Route::get('/tt',function (){
-        return view('test');
-    })->name('tt');
+//    Route::get('/',function (){
+//        return view('loggedin.index');
+//    })->name('test');
 });
 

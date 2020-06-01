@@ -13,7 +13,7 @@ class Controller extends BaseController
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
     function redirect(){
         if(Auth::user()){
-            return redirect()->route('test');
+            return view('loggedin.index');
         }
         return view('index');
     }

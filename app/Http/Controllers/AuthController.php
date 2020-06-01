@@ -80,7 +80,7 @@ class AuthController extends Controller
             ];
 
              if(Auth::attempt($userdata)) {
-                 return response()->json(['success'=>'Account created successfully', 'redirect_link' => route('test')]);
+                 return response()->json(['success'=>'Account created successfully', 'redirect_link' => route('home')]);
              }else{
                  return response()->json(['fail'=>'Invalid Username or password']);
              }

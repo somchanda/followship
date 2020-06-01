@@ -45,6 +45,7 @@
             let data = $(this).serialize();
             axios.post("{{route('loginPost')}}", data).then(data =>{
                 if(data.data.redirect_link != undefined){
+                    Notiflix.Loading.Dots();
                     window.location = data.data.redirect_link;
                 }else{
                     Notiflix.Report.Failure( 'Login fail',data.data.fail , 'Ok' );

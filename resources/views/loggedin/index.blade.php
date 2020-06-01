@@ -4,8 +4,9 @@
     <div class="row">
         <div class="col-md-6 offset-md-3">
             <div class="itemise_inner">
+                <a href="{{route('logout')}}" class="logout_action"><i class="fas fa-power-off"></i> logout</a>
                 <div class="profile_section_inner" style="padding-top: 40px;">
-                    <div class="user_profile_image" style="background: url('assets/img/users/avatar3.jpg');
+                    <div class="user_profile_image" style="background: url({{asset('assets/img/users/'.Auth::user()->avatar)}});
                                 width: 100px;
                                 height: 100px;
                                 background-position: center;
@@ -16,7 +17,7 @@
                                 margin-bottom: 30px;">
                     </div>
                     <div class="user_profile_name text-center">
-                        <h2> Oziri Emeka Emmanuel</h2>
+                        <h2>{{Auth::user()->name}}</h2>
                     </div>
                 </div>
                 <div class="profile_info_section">

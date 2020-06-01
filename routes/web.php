@@ -24,5 +24,6 @@ Route::middleware('auth')->group(function (){
 //    Route::get('/',function (){
 //        return view('loggedin.index');
 //    })->name('test');
+    Route::get('/logout','Auth\LoginController@logout')->name('logout');
 });
 

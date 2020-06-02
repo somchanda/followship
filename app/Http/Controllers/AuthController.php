@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\followship;
+use App\notification;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -11,9 +13,29 @@ use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
+
+    function redirect(){
+        if(Auth::user()){
+            $followers = followship::where('user1_id', '!=', Auth::user()->id)->where('user2_id',Auth::user()->id)->get();
+//            $followers = followship::where('user1_id', '!=', Auth::user()->id)->get();
+            $following = followship::where('user1_id', Auth::user()->id)->get();
+            $notification = notification::where('user_id',Auth::user()->id)->get();
+            $user = User::get();
+            return view('loggedin.index', compact('followers','following','notification','user'));
+        }
+        return view('index');
+    }
+
     public function register(){
         return view('home.register');
     }
+
+    public function search(Request $request){
+        $term = $request->term;
+        $data = User::where('name','LIKE','%'.$term.'%')->get();
+        return response()->view('home.partials.people-search', compact('data', 'term'));
+    }
+
     public function registerPost(Request $request){
         $rules = [
           'name'=>'required|string|max:120',

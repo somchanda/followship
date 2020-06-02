@@ -11,10 +11,4 @@ use Illuminate\Support\Facades\Auth;
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
-    function redirect(){
-        if(Auth::user()){
-            return view('loggedin.index');
-        }
-        return view('index');
-    }
 }

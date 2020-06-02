@@ -285,3 +285,10 @@ a.logout_action{
 a.logout_action:hover{
     color: #cef4de;
 }
+.no_report_found{
+    background-color: lightgray;
+    border-radius: 10px;
+    padding: 10px;
+    color: #3c71a4;
+    text-align: center;
+}

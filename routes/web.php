@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', "Controller@redirect")->name('home');
+Route::get('/', "AuthController@redirect")->name('home');
 
 Route::middleware('guest')->group(function (){
     Route::get('/register','AuthController@register')->name('register');
@@ -21,9 +21,10 @@ Route::middleware('guest')->group(function (){
     Route::post('/login','AuthController@loginPost')->name('loginPost');
 });
 Route::middleware('auth')->group(function (){
-//    Route::get('/',function (){
+//    Route::get('test/',function (){
 //        return view('loggedin.index');
 //    })->name('test');
     Route::get('/logout','Auth\LoginController@logout')->name('logout');
+    Route::get('/search','AuthController@search')->name('search');
 });
 

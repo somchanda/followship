@@ -61,6 +61,14 @@ class DatabaseSeeder extends Seeder
             'avatar' => 'avatar6.jpg'
         ]);
 
+        $user7 = \App\User::create([
+            'name' => 'user 7',
+            'username' => 'user7',
+            'email' => 'user7@gmail.com',
+            'password' => Hash::make('chanda'),
+            'avatar' => 'avatar7.jpg'
+        ]);
+
         \App\followship::create([
            'user1_id' => $user2->id,
            'user2_id' => 1

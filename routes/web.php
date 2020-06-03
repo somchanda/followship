@@ -26,5 +26,9 @@ Route::middleware('auth')->group(function (){
 //    })->name('test');
     Route::get('/logout','Auth\LoginController@logout')->name('logout');
     Route::get('/search','AuthController@search')->name('search');
+    Route::get('/userAction','AuthController@userAction')->name('userAction');
+    Route::get('/checkNotification','AuthController@checkNotification')->name('checkNotification');
+    Route::get('/reloadFollower','AuthController@reloadFollower')->name('reloadFollower');
+    Route::get('/reloadDashboard','AuthController@reloadDashboard')->name('reloadDashboard');
 });
 

@@ -14,11 +14,11 @@
                     "></div>
                 <div class="followingship-username float-left">{{$people->name}} </div>
                 @if(isFollowing($people->id)=='following')
-                    <button class="float-right followed followingship-status">Followed</button>
+                    <button class="float-right followed followingship-status" onclick="processData('{{$people->id}}','unfollowing')">Followed</button>
                 @elseif(isFollowing($people->id)=='follower')
-                    <button class="float-right following followingship-status">Following</button>
+                    <button class="float-right following followingship-status" onclick="processData('{{$people->id}}','unfollow')">Following</button>
                 @else
-                    <button class="float-right followed followingship-status">Follow</button>
+                    <button class="float-right followed followingship-status" onclick="processData('{{$people->id}}','follow')">Follow</button>
                 @endif
             </div>
         @endforeach

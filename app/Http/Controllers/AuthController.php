@@ -16,7 +16,7 @@ class AuthController extends Controller
 
     function redirect(){
         if(Auth::user()){
-            $followers = followship::where('user1_id', '!=', Auth::user()->id)->where('user2_id',Auth::user()->id)->get();
+            $followers = followship::where('user1_id', '!=', Auth::user()->id)->where('user2_id', Auth::user()->id)->get();
 //            $followers = followship::where('user1_id', '!=', Auth::user()->id)->get();
             $following = followship::where('user1_id', Auth::user()->id)->get();
             $notification = notification::where('user_id',Auth::user()->id)->get();
@@ -34,6 +34,62 @@ class AuthController extends Controller
         $term = $request->term;
         $data = User::where('name','LIKE','%'.$term.'%')->get();
         return response()->view('home.partials.people-search', compact('data', 'term'));
+    }
+
+    public function userAction(Request $request){
+        if($request->action == 'unfollow'){
+            if(followship::where('user1_id',$request->user_id)->where('user2_id',Auth::user()->id)->exists()){
+                $data = followship::where('user1_id',$request->user_id)->where('user2_id',Auth::user()->id);
+                $data->delete();
+                $followers = followship::where('user1_id', '!=', Auth::user()->id)->where('user2_id', Auth::user()->id)->get();
+                return response()->view('home.partials.follower-action',compact('followers'));
+            }else{
+                return response()->json(['data' => 'Cannot process data']);
+            }
+        }elseif($request->action == 'unfollowing'){
+            if(followship::where('user2_id',$request->user_id)->where('user1_id',Auth::user()->id)->exists()) {
+                $data = followship::where('user2_id', $request->user_id)->where('user1_id', Auth::user()->id);
+                $data->delete();
+                $following = followship::where('user1_id', Auth::user()->id)->get();
+                return response()->view('home.partials.following-action', compact('following'));
+            }else{
+                return response()->json(['data' => 'Cannot process data']);
+            }
+        }elseif($request->action == 'reload-people'){
+            $user = User::get();
+            return response()->view('home.partials.people-reload',compact('user'));
+        }elseif($request->action == 'follow'){
+            $notify = new notification();
+            $notify->user_id = $request->user_id;
+            $notify->content = 'You have a new notification';
+            $notify->title = 'You have a new notification';
+            $notify->save();
+
+            $following = new followship();
+            $following->user1_id = Auth::user()->id;
+            $following->user2_id = $request->user_id;
+            $following->save();
+            $following = followship::where('user1_id', Auth::user()->id)->get();
+            return response()->view('home.partials.following-action',compact('following'));
+
+        }
+    }
+
+    public function checkNotification(Request $request){
+        $data = notification::where('user_id',Auth::user()->id)->get();
+        return response()->json(['data' => $data->count()]);
+    }
+
+    public function reloadFollower(){
+        $followers = followship::where('user1_id', '!=', Auth::user()->id)->where('user2_id', Auth::user()->id)->get();
+        return response()->view('home.partials.follower-action',compact('followers'));
+    }
+
+    public function reloadDashboard(){
+        $followers = followship::where('user1_id', '!=', Auth::user()->id)->where('user2_id', Auth::user()->id)->get();
+        $following = followship::where('user1_id', Auth::user()->id)->get();
+        $notification = notification::where('user_id',Auth::user()->id)->get();
+        return response()->view('home.partials.dashboard-action', compact('followers','following','notification'));
     }
 
     public function registerPost(Request $request){
@@ -106,7 +162,6 @@ class AuthController extends Controller
              }else{
                  return response()->json(['fail'=>'Invalid Username or password']);
              }
-
         }
     }
 }

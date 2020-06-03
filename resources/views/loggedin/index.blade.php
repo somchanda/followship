@@ -32,6 +32,7 @@
                                 </ul>
                                 <br>
                                 <div id="tabsContent" class="tab-content">
+                                    <input type="hidden" id="notification" value="{{$notification->count()}}">
                                     @include('home.partials.dashboard',compact('followers','following','notification','user'))
                                     @include('home.partials.follower', compact('followers'))
                                     @include('home.partials.following', compact('following'))
@@ -48,11 +49,15 @@
 @stop
 @section('script')
     <script>
-        //to prevent reload page when user click submit form
+        /*
+        to prevent reload page when user click submit form
+        */
         $(document).on('submit','#userSearchForm',function (event) {
             event.preventDefault();
         });
-        //to handle search function
+        /*
+        to handle search function
+         */
         $(document).on('keyup','#userSearchForm',function (event) {
             event.preventDefault();
             let data = $('#userSearchInput').val();
@@ -67,5 +72,103 @@
                 console.log(error);
             })
         });
+
+
+        /*
+        handle action when user click unfollow, follow, unfollowing
+         */
+        function processData(user_id, action) {
+            let user_action = '';
+            if(action == 'unfollow'){
+                user_action = 'Are you sure you want to stop this user form following you?'
+            }else if(action == 'unfollowing'){
+                user_action = 'Are you sure you want to stop follow this user?';
+            }
+            Notiflix.Confirm.Show('Attention', user_action, 'Yes', 'No',
+                function(){ // Yes button callback
+                    axios.get('{{route('userAction')}}',{
+                        params: {
+                            action:action,
+                            user_id:user_id
+                        }
+                    }).then(data => {
+                       if(action == 'unfollow'){
+                           $('#follower-show-action').html(data.data);
+                       }else{
+                           $('#following-show-action').html(data.data);
+                       }
+                        reloadPeople();
+                        reloadDashboard();
+                    }).catch(error => {
+
+                    });
+                },
+                function(){ // No button callback
+
+                }
+            );
+        }
+
+        function reloadPeople() {
+            axios.get('{{route('userAction')}}',{
+                params: {
+                    action:'reload-people'
+                }
+            }).then(data => {
+                $('#searchResult').html(data.data);
+            }).catch(error => {
+
+            });
+        }
+
+        /*
+        check whether have new notification or not if have this function will alert to user with notification sound
+         */
+        function checkNotification() {
+            let status = false;
+            let notification = $('#notification').val();
+            setInterval(function () {
+                axios.get('{{route('checkNotification')}}',{
+                    params:{
+                        count: notification,
+                    }
+                }).then(data => {
+                   if(data.data.data > notification){
+                       $('#notification').val(data.data.data);
+                        if(status == false){
+                            let song = new Audio();
+                            song.src = '{{asset('assets/img/files/notification.mp3')}}';
+                            song.play();
+                            status = true;
+                            reloadFollower();
+                            reloadDashboard();
+                            reloadPeople();
+                        }
+                   }
+
+                }).catch(error => {
+
+                });
+            },6000);
+        }
+        checkNotification();
+
+        /*
+        reload follower when have other user follow us
+         */
+        function reloadFollower() {
+            axios.get('{{route('reloadFollower')}}').then(data =>{
+                $('#follower-show-action').html(data.data);
+            }).catch(error =>{
+
+            });
+        }
+        function reloadDashboard() {
+            axios.get('{{route('reloadDashboard')}}').then(data =>{
+                $('#dashboard-show-action').html(data.data);
+            }).catch(error =>{
+
+            });
+        }
     </script>
 @stop

@@ -186,7 +186,8 @@
             var ext = name.split('.').pop().toLowerCase();
             if(jQuery.inArray(ext, ['gif','png','jpg','jpeg']) == -1)
             {
-                alert("Invalid Image File");
+                Notiflix.Report.Failure( 'Invalid file',ext + ' file is not allowed please choose file gif, png, jpg, jpeg', 'Close');
+                return;
             }
             var oFReader = new FileReader();
             oFReader.readAsDataURL(document.getElementById("txt_img").files[0]);
@@ -194,7 +195,7 @@
             var fsize = f.size||f.fileSize;
             if(fsize > 2000000)
             {
-                alert("Image File Size is very big");
+                Notiflix.Report.Failure( 'File too big','This file is too big. File size must less than '+2+ ' MB', 'Close');
             }
             else
             {

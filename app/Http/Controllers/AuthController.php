@@ -6,9 +6,9 @@ use App\followship;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\notification;
 use App\User;
-use Faker\Provider\File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
@@ -38,6 +38,7 @@ class AuthController extends Controller
         return response()->view('home.partials.people-search', compact('data', 'term'));
     }
 
+    //perform any action when user do something in follow like follow, unfollow, unfollowing and reload people tab
     public function userAction(Request $request){
         if($request->action == 'unfollow'){
             if(followship::where('user1_id',$request->user_id)->where('user2_id',Auth::user()->id)->exists()){
@@ -77,6 +78,7 @@ class AuthController extends Controller
         }
     }
 
+    //check notification call every time by the interval in javascript in page loggedin/index.blade.php
     public function checkNotification(Request $request){
         $data = notification::where('user_id',Auth::user()->id)->get();
         return response()->json(['data' => $data->count()]);
@@ -94,6 +96,7 @@ class AuthController extends Controller
         return response()->view('home.partials.dashboard-action', compact('followers','following','notification'));
     }
 
+    //perform action when user upload their own profile
     public function uploadProfile(Request $request)
     {
         $imageName = time() . '.' . $request->txt_img->extension();
@@ -101,8 +104,8 @@ class AuthController extends Controller
         $user = User::find(Auth::user()->id);
         $imagePath = 'assets/img/users/' . $user->avatar;
         if ($user->avatar != 'no-avatar.jpg'){
-            if (\Illuminate\Support\Facades\File::exists($imagePath)) {
-                \Illuminate\Support\Facades\File::delete($imagePath);
+            if (File::exists($imagePath)) {
+                File::delete($imagePath);
             }
         }
 
@@ -113,13 +116,14 @@ class AuthController extends Controller
     }
 
 
+    //perform action when user click delete profile
     public function deleteProfile(){
         $user = User::find(Auth::user()->id);
 
         $imagePath = 'assets/img/users/' . $user->avatar;
         if ($user->avatar != 'no-avatar.jpg'){
-            if (\Illuminate\Support\Facades\File::exists($imagePath)) {
-                \Illuminate\Support\Facades\File::delete($imagePath);
+            if (File::exists($imagePath)) {
+                File::delete($imagePath);
             }
         }
 
@@ -128,6 +132,7 @@ class AuthController extends Controller
         $url = asset('assets/img/users/'.$user->avatar);
         return response()->json(['url'=>$url]);
     }
+    //perform action when user click register button
     public function registerPost(Request $request){
         $rules = [
           'name'=>'required|string|max:120',
@@ -168,7 +173,7 @@ class AuthController extends Controller
             return response()->json(['success'=>'Account created successfully', 'redirect_link' => route('home')]);
         }
     }
-
+    //Perform action when user click login
     public function loginPost(Request $request){
         $rules = [
             'username'=>'required|string|max:120',

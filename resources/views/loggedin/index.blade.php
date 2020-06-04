@@ -6,7 +6,7 @@
             <div class="itemise_inner">
                 <a href="{{route('logout')}}" class="logout_action"><i class="fas fa-power-off"></i> logout</a>
                 <div class="profile_section_inner" style="padding-top: 40px;">
-                    <div class="user_profile_image" style="background: url({{asset('assets/img/users/'.Auth::user()->avatar)}});
+                    <div class="user_profile_image" style="background-image: url({{asset('assets/img/users/'.Auth::user()->avatar)}});
                                 width: 100px;
                                 height: 100px;
                                 background-position: center;
@@ -14,8 +14,15 @@
                                 border-radius: 100%;
                                 border: 2px solid #f4f4f4;
                                 margin: 0 auto;
-                                margin-bottom: 30px;">
+                                margin-bottom: 30px; position: relative; overflow: hidden">
+                        <div id="delete_profile_icon">
+                            <span class="delete_img_icon my_delete_icon1"></span>
+                            <span class="delete_img_icon my_delete_icon2"></span>
+                        </div>
+                        <input type="file" name="txt_img" class="upload_btn" id="txt_img">
+                        <div class="overlay-layer">Upload</div>
                     </div>
+
                     <div class="user_profile_name text-center">
                         <h2>{{Auth::user()->name}}</h2>
                     </div>
@@ -108,7 +115,9 @@
                 }
             );
         }
-
+        /*
+        To reload people when have some change
+         */
         function reloadPeople() {
             axios.get('{{route('userAction')}}',{
                 params: {
@@ -137,7 +146,7 @@
                        $('#notification').val(data.data.data);
                         if(status == false){
                             let song = new Audio();
-                            song.src = '{{asset('assets/img/files/notification.mp3')}}';
+                            song.src = '{{asset('assets/file/just-saying.mp3')}}';
                             song.play();
                             status = true;
                             reloadFollower();
@@ -149,7 +158,7 @@
                 }).catch(error => {
 
                 });
-            },6000);
+            }, 4000);
         }
         checkNotification();
 
@@ -170,5 +179,57 @@
 
             });
         }
+
+        $(document).on('change', '#txt_img', function(){
+            var name = document.getElementById("txt_img").files[0].name;
+            var form_data = new FormData();
+            var ext = name.split('.').pop().toLowerCase();
+            if(jQuery.inArray(ext, ['gif','png','jpg','jpeg']) == -1)
+            {
+                alert("Invalid Image File");
+            }
+            var oFReader = new FileReader();
+            oFReader.readAsDataURL(document.getElementById("txt_img").files[0]);
+            var f = document.getElementById("txt_img").files[0];
+            var fsize = f.size||f.fileSize;
+            if(fsize > 2000000)
+            {
+                alert("Image File Size is very big");
+            }
+            else
+            {
+                form_data.append("txt_img", document.getElementById('txt_img').files[0]);
+                axios.post('{{route('uploadProfile')}}',form_data).then(data =>{
+                    var url =  data.data.url;
+                    $('.user_profile_image').css('backgroundImage','url("'+ url +'")');
+                }).catch(error =>{
+
+                });
+                {{--$.ajax({--}}
+                {{--    url:"{{route('uploadProfile')}}",--}}
+                {{--    method:"POST",--}}
+                {{--    data: form_data,--}}
+                {{--    contentType: false,--}}
+                {{--    cache: false,--}}
+                {{--    processData: false,--}}
+                {{--    beforeSend:function(){--}}
+                {{--        //$('#uploaded_image').html("<label class='text-success'>Image Uploading...</label>");--}}
+                {{--    },--}}
+                {{--    success:function(data)--}}
+                {{--    {--}}
+                {{--        //$('#uploaded_image').html(data);--}}
+                {{--        console.log(data.data.data);--}}
+                {{--    }--}}
+                {{--});--}}
+            }
+        });
+        $(document).on('click','#delete_profile_icon',function () {
+            axios.post('{{route('deleteProfile')}}').then(data =>{
+                var url =  data.data.url;
+                $('.user_profile_image').css('backgroundImage','url("'+ url +'")');
+            }).catch(error =>{
+
+            });
+        });
     </script>
 @stop

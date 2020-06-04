@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\followship;
+use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\notification;
 use App\User;
+use Faker\Provider\File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -92,6 +94,40 @@ class AuthController extends Controller
         return response()->view('home.partials.dashboard-action', compact('followers','following','notification'));
     }
 
+    public function uploadProfile(Request $request)
+    {
+        $imageName = time() . '.' . $request->txt_img->extension();
+        $request->txt_img->move(public_path('assets/img/users'), $imageName);
+        $user = User::find(Auth::user()->id);
+        $imagePath = 'assets/img/users/' . $user->avatar;
+        if ($user->avatar != 'no-avatar.jpg'){
+            if (\Illuminate\Support\Facades\File::exists($imagePath)) {
+                \Illuminate\Support\Facades\File::delete($imagePath);
+            }
+        }
+
+        $user->avatar = $imageName;
+        $user->save();
+        $url = asset('assets/img/users/'.$imageName);
+        return response()->json(['url'=> $url]);
+    }
+
+
+    public function deleteProfile(){
+        $user = User::find(Auth::user()->id);
+
+        $imagePath = 'assets/img/users/' . $user->avatar;
+        if ($user->avatar != 'no-avatar.jpg'){
+            if (\Illuminate\Support\Facades\File::exists($imagePath)) {
+                \Illuminate\Support\Facades\File::delete($imagePath);
+            }
+        }
+
+        $user->avatar = 'no-avatar.jpg';
+        $user->save();
+        $url = asset('assets/img/users/'.$user->avatar);
+        return response()->json(['url'=>$url]);
+    }
     public function registerPost(Request $request){
         $rules = [
           'name'=>'required|string|max:120',

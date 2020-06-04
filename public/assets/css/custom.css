@@ -292,3 +292,48 @@ a.logout_action:hover{
     color: #3c71a4;
     text-align: center;
 }
+.overlay-layer{
+    width:100px;
+    height:20px;
+    position:absolute;
+    opacity:0.5;
+    background-color:#000000;
+    z-index:0;
+    font-size:20px;
+    color:#FFFFFF;
+    text-align:center;
+    line-height:20px;
+    top: 70px;
+}
+.upload_btn{
+    position:absolute;
+    width:100px;
+    height:20px;
+    z-index:10;
+    opacity:0;
+    top: 70px;
+    cursor: pointer;
+}
+.delete_img_icon{
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    /*background-color: red;*/
+    z-index: 102;
+    cursor: pointer;
+}
+.my_delete_icon1{
+    width:20px;
+    height: 4px;
+    background-color: red;
+    border-radius: 2px;
+    transform: rotate(45deg);
+}
+.my_delete_icon2{
+    width:20px;
+    height: 4px;
+    background-color: red;
+    border-radius: 2px;
+    transform: rotate(-45deg);
+}
+

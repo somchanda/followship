@@ -21,14 +21,13 @@ Route::middleware('guest')->group(function (){
     Route::post('/login','AuthController@loginPost')->name('loginPost');
 });
 Route::middleware('auth')->group(function (){
-//    Route::get('test/',function (){
-//        return view('loggedin.index');
-//    })->name('test');
     Route::get('/logout','Auth\LoginController@logout')->name('logout');
     Route::get('/search','AuthController@search')->name('search');
     Route::get('/userAction','AuthController@userAction')->name('userAction');
     Route::get('/checkNotification','AuthController@checkNotification')->name('checkNotification');
     Route::get('/reloadFollower','AuthController@reloadFollower')->name('reloadFollower');
     Route::get('/reloadDashboard','AuthController@reloadDashboard')->name('reloadDashboard');
+    Route::post('/uploadProfile','AuthController@uploadProfile')->name('uploadProfile');
+    Route::post('/deleteProfile','AuthController@deleteProfile')->name('deleteProfile');
 });
 
